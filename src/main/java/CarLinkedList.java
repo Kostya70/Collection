@@ -1,4 +1,5 @@
-public class CarLinkedList implements CarList{
+public class CarLinkedList implements CarList {
+
     private Node first;
     private Node last;
     private int size = 0;
@@ -9,7 +10,7 @@ public class CarLinkedList implements CarList{
     }
 
     @Override
-    public void add(Car car) {
+    public boolean add(Car car) {
         if (size == 0) {
             first = new Node(null, car, null);
             last = first;
@@ -19,16 +20,16 @@ public class CarLinkedList implements CarList{
             secondLast.next = last;
         }
         size++;
+        return true;
     }
 
     @Override
-    public void add(Car car, int index) {
+    public boolean add(Car car, int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
         if (index == size) {
-            add(car);
-            return;
+            return add(car);
         }
         Node nodeNext = getNode(index);
         Node nodePrevious = nodeNext.previous;
@@ -40,18 +41,21 @@ public class CarLinkedList implements CarList{
             first = newNode;
         }
         size++;
+        return true;
     }
 
     @Override
     public boolean remove(Car car) {
-        Node node = first;
-        for (int i = 0; i < size; i++) {
-            if (node.value.equals(car)) {
-                return removeAt(i);
-            }
-            node = node.next;
+        int index = findElement(car);
+        if (index != -1) {
+            return removeAt(index);
         }
         return false;
+    }
+
+    @Override
+    public boolean contains(Car car) {
+        return findElement(car) != -1;
     }
 
     @Override
@@ -85,6 +89,17 @@ public class CarLinkedList implements CarList{
         size = 0;
     }
 
+    private int findElement(Car car) {
+        Node node = first;
+        for (int i = 0; i < size; i++) {
+            if (node.value.equals(car)) {
+                return i;
+            }
+            node = node.next;
+        }
+        return -1;
+    }
+
     private Node getNode(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
@@ -108,4 +123,3 @@ public class CarLinkedList implements CarList{
         }
     }
 }
-
